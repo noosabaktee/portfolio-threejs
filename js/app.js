@@ -13,11 +13,19 @@ var APP = {
 
 		var events = {};
 
+		let position = [
+			{move: new THREE.Vector3(-1.7,3.7,3),rotate:new THREE.Vector3(0,90,0)}, // Welcome
+			{move: new THREE.Vector3(3.5,5.2,-1),rotate:new THREE.Vector3(0,0,0)}, // Poster
+			{move: new THREE.Vector3(2.6,2.7,0.2),rotate:new THREE.Vector3(-90,0,-90)}, // Newspaper
+			{move: new THREE.Vector3(-1,4.2,0),rotate:new THREE.Vector3(0,90,0)}, // Projects
+			{move: new THREE.Vector3(-2.3,2.5,-0.9),rotate:new THREE.Vector3(0,90,0)}, // Computer
+			{move: new THREE.Vector3(0,3,-3.3),rotate:new THREE.Vector3(-90,0,0)}, // Ipad
+		]
+
 		let move = false
 		let from,to,rotateFrom,rotateTo
-		let speed = 0.1
-		let rotateSpeed = 0.01
-		let pos = 0
+		let speed = 30 // 1 second
+		let pos = -1
 
 		function moveTo(t,rt){
 			move = true
@@ -36,79 +44,79 @@ var APP = {
 		}
 
 		function moveAnimate(){
-	
-			if((Math.round(camera.position.x) == to.x) && 
-			(Math.round(camera.position.y) == to.y) &&
-			(Math.round(camera.position.z) == to.z)){
-				move = false
-			}
+			// if((Math.round(camera.position.x) == Math.round(to.x)) && 
+			// (Math.round(camera.position.y) == Math.round(to.y)) &&
+			// (Math.round(camera.position.z) == Math.round(to.z)) &&
+			// (Math.round(camera.rotation.x) == Math.round(rotateTo.x)) && 
+			// (Math.round(camera.rotation.y) == Math.round(rotateTo.y)) &&
+			// (Math.round(camera.rotation.z) == Math.round(rotateTo.z))){
+			// 	move = false
+			// }
 
 			// Move x
 			if((from.x - to.x) > 0){
 				if(camera.position.x > to.x){
-					camera.position.x -= speed
+					camera.position.x -= (from.x - to.x)/speed
 				}
 			}else if((from.x - to.x) < 0){
 				if(camera.position.x < to.x){
-					camera.position.x += speed
+					camera.position.x -= (from.x - to.x)/speed
 				}
 			} 
 
 			// Move y
 			if((from.y - to.y) > 0){
 				if(camera.position.y > to.y){
-					camera.position.y -= speed
+					camera.position.y -= (from.y - to.y)/speed
 				}
 			}else if((from.y - to.y) < 0){
 				if(camera.position.y < to.y){
-					camera.position.y += speed
+					camera.position.y -= (from.y - to.y)/speed
 				}
 			} 
 
 			// Move z
 			if((from.z - to.z) > 0){
 				if(camera.position.z > to.z){
-					camera.position.z -= speed
+					camera.position.z -= (from.z - to.z)/speed
 				}
 			}else if((from.z - to.z) < 0){
 				if(camera.position.z < to.z){
-					camera.position.z += speed
+					camera.position.z -= (from.z - to.z)/speed
 				}
 			} 
 
 		}
 
 		function rotateAnimate(){
-			// Move x
+			// Rotate x
 			if((rotateFrom.x - rotateTo.x) > 0){
 				if(camera.rotation.x > rotateTo.x){
-					camera.rotation.x -= rotateSpeed
+					camera.rotation.x -= (rotateFrom.x - rotateTo.x)/speed
 				}
 			}else if((rotateFrom.x - rotateTo.x) < 0){
 				if(camera.rotation.x < rotateTo.x){
-					camera.rotation.x += rotateSpeed
+					camera.rotation.x -= (rotateFrom.x - rotateTo.x)/speed
 				}
 			} 
-
-			// Move y
+			// Rotate y
 			if((rotateFrom.y - rotateTo.y) > 0){
 				if(camera.rotation.y > rotateTo.y){
-					camera.rotation.y -= rotateSpeed
+					camera.rotation.y -= (rotateFrom.y - rotateTo.y)/speed
 				}
 			}else if((rotateFrom.y - rotateTo.y) < 0){
 				if(camera.rotation.y < rotateTo.y){
-					camera.rotation.y += rotateSpeed
+					camera.rotation.y -= (rotateFrom.y - rotateTo.y)/speed
 				}
 			} 
-
-			// Move z
+			// Rotate z
 			if((rotateFrom.z - rotateTo.z) > 0){
 				if(camera.rotation.z > rotateTo.z){
-					camera.rotation.z -= rotateSpeed
+					camera.rotation.z -= (rotateFrom.z - rotateTo.z)/speed
 				}
 			}else if((rotateFrom.z - rotateTo.z) < 0){
 				if(camera.rotation.z < rotateTo.z){
-					camera.rotation.z += rotateSpeed
+					camera.rotation.z -= (rotateFrom.z - rotateTo.z)/speed
 				}
 			} 
 
@@ -322,15 +330,18 @@ var APP = {
 		//
 
 		function onKeyDown( event ) {
-			if(pos == 0){
-				moveTo(new THREE.Vector3(5,7,9), new THREE.Vector3(1,1,1))
+			if(event.keyCode == 39 && pos < 5){
 				pos++
-			}else if(pos == 1){
-				moveTo(new THREE.Vector3(12,9,10), new THREE.Vector3(-35,31,20))
-				pos++
+				var movePos = position[pos]["move"]
+				var rotatePos = position[pos]["rotate"]
+				moveTo(movePos, rotatePos)
+			}else if(event.keyCode == 37 && pos > 0){
+				pos--
+				var movePos = position[pos]["move"]
+				var rotatePos = position[pos]["rotate"]
+				moveTo(movePos, rotatePos)
 			}
 			dispatch( events.keydown, event );
-
 		}
 
 		function onKeyUp( event ) {
